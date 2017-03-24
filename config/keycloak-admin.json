@@ -1,0 +1,9 @@
+{
+  "realm": "master",
+  "bearer-only": true,
+  "auth-server-url": "http://localhost:8080/auth",
+  "ssl-required": "external",
+  "resource": "admin-cli",
+    "public-client": true,
+    "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAupYt39qgk9EGt3aKGl7FrTht4CNx0fCszAo/7eVmaTsO9JG2ehj5JYsC7MvEMD3AffhQM/zB5tuEqNfT/YHH7RBpl1Xk6O4ZOfUoK1QWXk+ha1cE/KQ4Z7yzTtyF9LGwmlOs1aCU7prl/oJPKp3nIrMKVJuLmSZei0HlDYQqeXS12agTLwLSUZkEySK2XgCvAh02WEYsdNGfo2rg2mw5r1SXMP/zvEl400tqN+bFYC79WbLD0gCFgN8Mn3Rctw+pgjp0gxJjOVYTl3MYwpzTXAVSZXcTRXxMBKAqzWtL4CGGEEhDn/Zrh9MxVbFq1Toj0BD/NmZODQT4bTF+tKcPUQIDAQAB"
+}
