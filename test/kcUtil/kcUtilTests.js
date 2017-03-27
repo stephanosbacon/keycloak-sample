@@ -3,7 +3,7 @@
 const config = require(process.cwd() + '/config')('testClient');
 const include = config.include;
 
-const kc = include('kcUtils.js');
+const kc = include('kcUtils/kcUtils.js');
 
 const assert = require('assert');
 const gensym = require('randomstring');
