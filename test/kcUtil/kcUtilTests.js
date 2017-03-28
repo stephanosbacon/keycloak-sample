@@ -1,4 +1,5 @@
 'use strict';
+/* global describe it after */
 
 const config = require(process.cwd() + '/config')('testClient');
 const include = config.include;
@@ -47,16 +48,30 @@ describe('Test kcUtils', function() {
       });
   });
 
+  it('get realm keys', function(done) {
+    kc.getRealmKeys(tokenStuff.access_token, config.initialRealm,
+                    rval => {
+                      return rval.keys.find(elt => { return elt.type === 'RSA'; });
+                    })
+      .then(key => { assert.equal(key.type, 'RSA'); done(); })
+      .catch(err => done(err));
+  });
+
   it('createClient', function(done) {
     kc.createClient(tokenStuff.access_token, config.initialRealm,
                     {
                       // If this is false you need a client secret to do things like
                       // hit the userinfo endpoint
                       publicClient: false,
+
+                      // bearerOnly means that this client will not be used for getting
+                      // tokens.  Unclear what bearerOnly = true
+                      // and directAccessGrantsEnables = true means.
                       bearerOnly: true,
                       
                       // If this is false, you can't log in using this client
-                      directAccessGrantsEnabled: true,
+                      directAccessGrantsEnabled: false,
+                      
                       clientId: clientId
                     })
       .then((body) => {
@@ -67,13 +82,10 @@ describe('Test kcUtils', function() {
       });
   });
 
-  it('getClients', function(done) {
-    kc.getClients(tokenStuff.access_token, config.initialRealm,
-                  {
-                    clientId: clientId
-                  })
+  it('getClient', function(done) {
+    kc.getClient(tokenStuff.access_token, config.initialRealm, clientId)
       .then((body) => {
-        idOfClient = body[0].id;
+        idOfClient = body.id;
         done();
       })
       .catch((err) => {
@@ -116,6 +128,7 @@ describe('Test kcUtils', function() {
   it('getUser - for initial user', function(done) {
     kc.getUser(tokenStuff.access_token, config.initialRealm, config.initialUsername)
       .then(body => {
+        assert.equal(body.username, 'foo');
         done();
       })
       .catch(err => {
@@ -136,31 +149,16 @@ describe('Test kcUtils', function() {
     }]
   };
 
-  /*
-  let userData = {
-    email: 'foob@foobar.com',
-    firstName: 'foob',
-    lastName: 'bar',
-    username: 'foob',
-    enabled: true,
-    credentials: [{
-      type: 'password',
-      value: 'flee',
-      temporary: false
-    }]
-  };
-*/
-
   it('createUser', function(done) {
     kc.createUser(tokenStuff.access_token, config.initialRealm, userData)
       .then(() => {
         return kc.getUser(tokenStuff.access_token, config.initialRealm,
                           userData.username);
       })
-      .then((users) => {
-        createdUserId = users[0].id;
+      .then((user) => {
+        createdUserId = user.id;
         return kc.resetPassword(tokenStuff.access_token, config.initialRealm,
-                                users[0].id, userData.credentials[0].value);
+                                user.id, userData.credentials[0].value);
       })
       .then(() => {
         done();

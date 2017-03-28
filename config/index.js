@@ -1,5 +1,7 @@
 'use strict';
 
+/* global global */
+
 /**
  * configType - dev, testClient, prod - there should be a file in '.'
  * called config-<configType>.js
