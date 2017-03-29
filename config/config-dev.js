@@ -30,7 +30,10 @@ module.exports = {
     'servicePort' :  kcServicePort,
     'serviceProtocol': kcServiceProtocol,
     'serviceUrl': kcServiceProtocol + '://' + kcServiceHost + ':' + kcServicePort + '/auth',
-    'keycloakConnectConfig': fs.readFileSync(keycloakDotJsonPath)
+    // This isn't documented, but the second arg to the keyclock-connect constructor
+    // can be a path to the file or an object
+    //
+    'keycloakDotJsonPath': keycloakDotJsonPath
   }
 };
 

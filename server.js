@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const KeyCloak = require('keycloak-connect');
-const keycloak = new KeyCloak({}, config.keycloak.keycloakConnectConfig);
+const keycloak = new KeyCloak({}, config.keycloak.keycloakDotJsonPath);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -23,8 +23,7 @@ app.use(cookieParser());
 app.use(keycloak.middleware());
 
 app.get('/foo', keycloak.protect(), (req, res) => {
-    console.log(req);
-    res.status(200).end('{ "message": "hello" }');
+  res.status(200).send({ message: 'hello' }).end();
 });
 
 const http = require('http');

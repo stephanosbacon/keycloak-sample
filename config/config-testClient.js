@@ -15,8 +15,4 @@ config.initialClient = (process.env.TEST_KC_CLIENT || 'admin-cli');
 config.serverUrl =
   config.protocol + '://' + serviceHost + ':' + config.servicePort;
 
-
-console.log(config.serverUrl);
-
-
 module.exports = config;

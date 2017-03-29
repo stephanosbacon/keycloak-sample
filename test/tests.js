@@ -116,9 +116,9 @@ describe('Test using keycloak-connect', function() {
     let keycloakJson = {
       realm: config.initialRealm,
       'bearer-only': true,  // Note bearer-only vs bearerOnly in createClient
-      'auth-server-url': config.keycloakUrl,
+      'auth-server-url': config.keycloak.serviceUrl,
       'ssl-required': "external",
-      resource: idOfClient,
+      resource: clientId,
       'realm-public-key': realmPublicKey,
       credentials: {
         secret: clientSecret
@@ -129,6 +129,7 @@ describe('Test using keycloak-connect', function() {
     }
     let str = JSON.stringify(keycloakJson);
     fs.writeFileSync(absPath('temp/keycloak.json'), JSON.stringify(keycloakJson, null, 2));
+
     done();
   });
 
@@ -154,10 +155,11 @@ describe('Test using keycloak-connect', function() {
   // And this is what all the fuss was about
   //
   it('now test a route', function(done) {
-    req.get('/')
+    req.get('/foo')
        .set('Authorization', 'Bearer ' + userAccessToken)
        .expect(200)
        .end(function (err, res) {
+         assert.equal(res.body.message, 'hello');
          done(err);
        });
   });
