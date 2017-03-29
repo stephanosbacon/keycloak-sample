@@ -17,3 +17,9 @@ docker run -e KEYCLOAK_USER=foo -e KEYCLOAK_PASSWORD=bar -p 8080:8080 jboss/keyc
 npm install
 npm test
 ```
+
+You can require this as a module as well (not published to npm, just put the git repo as a dependency in package.json):
+
+```
+cons kc = require('kc-utils')('http://localhost:8080/auth');
+```
