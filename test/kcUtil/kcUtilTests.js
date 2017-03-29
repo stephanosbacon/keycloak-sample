@@ -4,7 +4,7 @@
 const config = require(process.cwd() + '/config')('testClient');
 const include = config.include;
 
-const kc = include('kcUtils/kcUtils.js');
+const kc = include('index.js')(config.keycloak.serviceUrl);
 
 const assert = require('assert');
 const gensym = require('randomstring');
@@ -13,6 +13,15 @@ const cs = {
   length: 10,
   capitalization: 'lowercase'
 };
+
+describe('Test consBearerToken', function() {
+  it('t1', function(done) {
+    assert.equal(kc.consBearerToken('Bearer foo'), 'Bearer foo');
+    assert.equal(kc.consBearerToken('bearer foo'), 'bearer foo');
+    assert.equal(kc.consBearerToken('foo'), 'Bearer foo');
+    done();
+  });
+});
 
 describe('Test kcUtils', function() {
   let tokenStuff;

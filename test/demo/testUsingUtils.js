@@ -12,7 +12,7 @@ const req = request(config.serverUrl);
 
 const fs = require('fs');
 
-const kc = include('kcUtils/kcUtils.js');
+const kc = include('index.js')(config.keycloak.serviceUrl);
 const gensym = require('randomstring').generate;
 
 const cs = {
@@ -129,7 +129,7 @@ describe('Test using keycloak-connect', function() {
     // Now that we have keycloak.json file, let's set it in the config
     config.keycloak.keycloakConnectConfig = fs.readFileSync(absPath('temp/keycloak.json'));
 
-    server = include('server.js');
+    server = include('test/util/server.js');
     server.listen(config.servicePort);
   });
 
