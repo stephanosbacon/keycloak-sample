@@ -23,6 +23,10 @@ app.use(cookieParser());
 app.use(keycloak.middleware());
 
 app.get('/foo', keycloak.protect(), (req, res) => {
+  // If you want to get at the user info inside the token
+  // look in req.kauth.grant.access_token.content
+  // The id-of-user is the field "sub"
+  // console.log(JSON.stringify(req.kauth.grant.access_token.content, null, 2));
   res.status(200).send({ message: 'hello' }).end();
 });
 

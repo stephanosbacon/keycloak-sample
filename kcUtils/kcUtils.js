@@ -17,6 +17,7 @@ const request = require('request');
  * @param {string} password
  * @param {string} realm
  * @param {string} clientId - the name of the client to use
+ * @param {string} cleaner - a cleaner function (takes a body and returns something)
  * @returns {Promise} returns a promise, that when resolves returns the following schema:
  * {
  *    "access_token": "...",
@@ -29,7 +30,7 @@ const request = require('request');
  *    "session_state": "..."
  * }
  */
-function getToken(username, password, realm, clientId) {
+function getToken(username, password, realm, clientId, cleaner) {
   let options = {
     method: 'POST',
     url: consUrl('/realms/' + realm + '/protocol/openid-connect/token'),
@@ -44,7 +45,7 @@ function getToken(username, password, realm, clientId) {
     }
   };
 
-  return req(options);
+  return req(options, cleaner);
 }
 
 
@@ -120,12 +121,12 @@ function deleteClient(accessToken, realm, idOfClient) {
  * @param {string} accessToken
  * @param {string} realm
  * @param {string} idOfClient - this is the id (not the licentId, aka name).
- *                              You get this by using getClient()[0].id
+ *                              You get this by using getClient().id
  * @returns {Promise} - a promise, that when resolved returns an instance of
  *  http://www.keycloak.org/docs-api/3.0/rest-api/index.html#_credentialrepresentation,
  *  from which you want the "value" attribute.
  */
-function getClientSecret(accessToken, realm, idOfClient) {
+function getClientSecret(accessToken, realm, idOfClient, cleaner) {
   let options = {
     method: 'GET',
     url: consUrl('/admin/realms/' + realm + '/clients/' + idOfClient + '/client-secret'),
@@ -133,7 +134,7 @@ function getClientSecret(accessToken, realm, idOfClient) {
       authorization: 'Bearer ' + accessToken
     }
   };
-  return req(options);
+  return req(options, cleaner);
 }
 
 /**
@@ -283,7 +284,7 @@ function resetPassword(accessToken, realm, username, newPass, temporary) {
  * @returns {Promise} a promise which when resolved yields a user info object that includes
  *   among other fields "sub" (which is the idOfUser) as well as name, email, etc.
  */
-function getUserInfo(clientSecret, accessToken, realm) {
+function getUserInfo(clientSecret, accessToken, realm, cleaner) {
   let options = {
     method: 'GET',
     url: consUrl('/realms/' + realm + '/protocol/openid-connect/userinfo'),
@@ -295,7 +296,7 @@ function getUserInfo(clientSecret, accessToken, realm) {
       client_secret: clientSecret
     }
   };
-  return req(options);
+  return req(options, cleaner);
 }
 
 /**
@@ -306,7 +307,7 @@ function getUserInfo(clientSecret, accessToken, realm) {
  * @returns {Promise} a promise, which when resolved yields an instance of
  *   http://www.keycloak.org/docs-api/3.0/rest-api/index.html#_userrepresentation
  */
-function getUser(accessToken, realm, userName) {
+function getUser(accessToken, realm, userName, cleaner) {
   let options = {
     method: 'GET',
     url: consUrl('/admin/realms/' + realm + '/users'),
@@ -318,7 +319,7 @@ function getUser(accessToken, realm, userName) {
       username: userName
     }
   };
-  return req(options, body => { return body[0]; });
+  return req(options, body => { return cleaner ? cleaner(body[0]) : body[0]; } );
 }
 
 // Note that the third arg is an id, not a username, so you either have to call
